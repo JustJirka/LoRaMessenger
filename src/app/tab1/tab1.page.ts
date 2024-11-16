@@ -15,7 +15,7 @@ export class Tab1Page {
   async fetchConnectedDevices() {
     try {
       const result = await UsbSerial.connectedDevices();
-      this.connectedDevices = result.devices.map(device => JSON.stringify(device));
+      this.connectedDevices = result.devices.map(device => JSON.stringify(device, null, 2));
     } catch (error) {
       console.error('Error fetching connected devices', error);
     }
