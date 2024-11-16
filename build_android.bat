@@ -1,4 +1,1 @@
-ionic build 
-ionic cap copy
-ionic cap sync
-ionic cap open android
+ionic build && ionic cap copy && ionic cap sync && ionic cap open android
