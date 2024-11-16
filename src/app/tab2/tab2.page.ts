@@ -77,6 +77,7 @@ export class Tab2Page implements OnInit {
 
     try {
       await UsbSerial.writeSerial({ data: this.messageToSend });
+      this.serialData.push("ME: "+this.messageToSend);
       this.presentToast('Message sent successfully');
       this.messageToSend = ''; // Clear the input field
     } catch (error) {
@@ -102,7 +103,8 @@ export class Tab2Page implements OnInit {
     try {
       await UsbSerial.addListener('data', (data: { data: string }) => {
         if (data.data) {
-          this.serialData.push(data.data);
+          this.serialData.push("Received: "+data.data);
+          this.presentToast('Serial data read successfully');
           this.presentToast(data.data);
           this.cdr.detectChanges(); // Trigger change detection
         }
@@ -118,7 +120,7 @@ export class Tab2Page implements OnInit {
       const result = await UsbSerial.readSerial();
       if (result.data) {
         const message = this.hexToString(result.data);
-        this.serialData.push(message);
+        this.serialData.push("Received: "+message);
         this.presentToast('Serial data read successfully');
       }
     } catch (error) {
