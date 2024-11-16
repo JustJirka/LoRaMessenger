@@ -19,3 +19,10 @@
     <ion-item *ngFor="let data of serialData">{{ data }}</ion-item>
   </ion-list>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-input [(ngModel)]="messageToSend" placeholder="Type your message"></ion-input>
+    <ion-button (click)="sendMessage()">Send</ion-button>
+  </ion-toolbar>
+</ion-footer>

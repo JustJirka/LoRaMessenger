@@ -10,6 +10,7 @@ import { ToastController } from '@ionic/angular';
 export class Tab2Page implements OnInit {
   serialData: string[] = [];
   connectedDevices: any[] = [];
+  messageToSend: string = '';
 
   constructor(private toastController: ToastController, private cdr: ChangeDetectorRef) {}
 
@@ -65,6 +66,22 @@ export class Tab2Page implements OnInit {
     } else {
       this.presentToast('No connected devices found');
       console.error('No connected devices found');
+    }
+  }
+
+  async sendMessage() {
+    if (this.messageToSend.trim().length === 0) {
+      this.presentToast('Message cannot be empty');
+      return;
+    }
+
+    try {
+      await UsbSerial.writeSerial({ data: this.messageToSend });
+      this.presentToast('Message sent successfully');
+      this.messageToSend = ''; // Clear the input field
+    } catch (error) {
+      this.presentToast('Error sending message');
+      console.error('Error sending message', error);
     }
   }
 
