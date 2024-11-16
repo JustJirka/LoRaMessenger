@@ -14,4 +14,15 @@
   </ion-header>
 
   <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div>
+    <h2>Serial Data:</h2>
+    <ul>
+      <li *ngFor="let data of serialData">{{ data }}</li>
+    </ul>
+    <ion-button (click)="fetchConnectedDevices()">Fetch Connected Devices</ion-button>
+    <h2>Connected Devices:</h2>
+    <ul>
+      <li *ngFor="let device of connectedDevices">{{ device }}</li>
+    </ul>
+  </div>
 </ion-content>
