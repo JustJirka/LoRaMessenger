@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UsbSerial, UsbSerialOptions } from 'usb-serial-plugin';
 import { ToastController } from '@ionic/angular';
 
@@ -11,7 +11,7 @@ export class Tab2Page implements OnInit {
   serialData: string[] = [];
   connectedDevices: any[] = [];
 
-  constructor(private toastController: ToastController) {}
+  constructor(private toastController: ToastController, private cdr: ChangeDetectorRef) {}
 
   async presentToast(message: string) {
     const toast = await this.toastController.create({
@@ -70,9 +70,7 @@ export class Tab2Page implements OnInit {
 
   ngOnInit() {
     this.openSerialConnection();
-    setInterval(() => {
-      this.readSerialData();
-    }, 500);
+    this.addSerialDataListener();
   }
 
   hexToString(hex: string): string {
@@ -81,6 +79,21 @@ export class Tab2Page implements OnInit {
       str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
     }
     return str;
+  }
+
+  async addSerialDataListener() {
+    try {
+      await UsbSerial.addListener('data', (data: { data: string }) => {
+        if (data.data) {
+          this.serialData.push(data.data);
+          this.presentToast(data.data);
+          this.cdr.detectChanges(); // Trigger change detection
+        }
+      });
+    } catch (error) {
+      this.presentToast('Error adding serial data listener');
+      console.error('Error adding serial data listener', error);
+    }
   }
 
   async readSerialData() {
