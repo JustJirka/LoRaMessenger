@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UsbSerial, UsbSerialOptions } from 'usb-serial-plugin';
 import { ToastController } from '@ionic/angular';
 
@@ -7,7 +7,7 @@ import { ToastController } from '@ionic/angular';
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss']
 })
-export class Tab2Page {
+export class Tab2Page implements OnInit {
   serialData: string[] = [];
   connectedDevices: any[] = [];
 
@@ -49,8 +49,8 @@ export class Tab2Page {
         dataBits: 8,
         stopBits: 1,
         parity: 0,
-        dtr: true,
-        rts: true
+        dtr: false,
+        rts: false
       };
 
       console.log('USB Serial Options:', options);
@@ -65,6 +65,35 @@ export class Tab2Page {
     } else {
       this.presentToast('No connected devices found');
       console.error('No connected devices found');
+    }
+  }
+
+  ngOnInit() {
+    this.openSerialConnection();
+    setInterval(() => {
+      this.readSerialData();
+    }, 500);
+  }
+
+  hexToString(hex: string): string {
+    let str = '';
+    for (let i = 0; i < hex.length; i += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return str;
+  }
+
+  async readSerialData() {
+    try {
+      const result = await UsbSerial.readSerial();
+      if (result.data) {
+        const message = this.hexToString(result.data);
+        this.serialData.push(message);
+        this.presentToast('Serial data read successfully');
+      }
+    } catch (error) {
+      this.presentToast('Error reading serial data');
+      console.error('Error reading serial data', error);
     }
   }
 }
