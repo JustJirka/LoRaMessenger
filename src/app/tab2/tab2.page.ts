@@ -125,9 +125,11 @@ export class Tab2Page implements OnInit {
 
   async addSerialDataListener() {
     try {
-      await UsbSerial.addListener('data', (data: { data: string }) => {
+      await UsbSerial.addListener('data', async (data: { data: string }) => {
         if (data.data) {
-          this.serialData.push("Received: "+data.data);
+          const receivedMessage = "Received: " + data.data;
+          this.serialData.push(receivedMessage);
+          await this.saveMessageToStorage(receivedMessage); // Save received message to storage
           this.presentToast('Serial data read successfully');
           this.presentToast(data.data);
           this.cdr.detectChanges(); // Trigger change detection

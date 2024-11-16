@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab3',
@@ -9,7 +10,7 @@ import { Storage } from '@ionic/storage-angular';
 export class Tab3Page implements OnInit {
   savedMessages: string[] = [];
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private platform: Platform) {
     this.initStorage();
   }
 
@@ -23,6 +24,12 @@ export class Tab3Page implements OnInit {
   }
 
   ngOnInit() {
-    this.loadMessagesFromStorage(); // Load messages from storage on init
+    this.platform.ready().then(() => {
+      this.loadMessagesFromStorage(); // Load messages from storage on init
+    });
+  }
+
+  ionViewWillEnter() {
+    this.loadMessagesFromStorage(); // Refresh messages when the view is about to enter
   }
 }
