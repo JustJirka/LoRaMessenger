@@ -13,5 +13,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-list>
+    <ion-item *ngFor="let message of savedMessages">{{ message }}</ion-item>
+  </ion-list>
 </ion-content>

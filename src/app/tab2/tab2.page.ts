@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UsbSerial, UsbSerialOptions } from 'usb-serial-plugin';
 import { ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-tab2',
@@ -12,7 +13,23 @@ export class Tab2Page implements OnInit {
   connectedDevices: any[] = [];
   messageToSend: string = '';
 
-  constructor(private toastController: ToastController, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private toastController: ToastController, 
+    private cdr: ChangeDetectorRef,
+    private storage: Storage // Add storage to constructor
+  ) {
+    this.initStorage();
+  }
+
+  async initStorage() {
+    await this.storage.create();
+  }
+
+  async saveMessageToStorage(message: string) {
+    let messages = await this.storage.get('messages') || [];
+    messages.push(message);
+    await this.storage.set('messages', messages);
+  }
 
   async presentToast(message: string) {
     const toast = await this.toastController.create({
@@ -78,6 +95,7 @@ export class Tab2Page implements OnInit {
     try {
       await UsbSerial.writeSerial({ data: this.messageToSend });
       this.serialData.push("ME: "+this.messageToSend);
+      await this.saveMessageToStorage("ME: "+this.messageToSend); // Save message to storage
       this.presentToast('Message sent successfully');
       this.messageToSend = ''; // Clear the input field
     } catch (error) {
@@ -86,9 +104,15 @@ export class Tab2Page implements OnInit {
     }
   }
 
+  async loadMessagesFromStorage() {
+    const messages = await this.storage.get('messages') || [];
+    this.serialData = messages;
+  }
+
   ngOnInit() {
     this.openSerialConnection();
     this.addSerialDataListener();
+    this.loadMessagesFromStorage(); // Load messages from storage on init
   }
 
   hexToString(hex: string): string {
