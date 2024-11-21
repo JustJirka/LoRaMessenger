@@ -12,6 +12,7 @@ export class Tab2Page implements OnInit {
   serialData: string[] = [];
   connectedDevices: any[] = [];
   messageToSend: string = '';
+  drugDealingMode: boolean = false;
 
   constructor(
     private toastController: ToastController, 
@@ -26,6 +27,7 @@ export class Tab2Page implements OnInit {
   }
 
   async saveMessageToStorage(message: string) {
+    if (this.drugDealingMode) return;
     let messages = await this.storage.get('messages') || [];
     messages.push(message);
     await this.storage.set('messages', messages);
