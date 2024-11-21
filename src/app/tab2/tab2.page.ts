@@ -112,7 +112,6 @@ export class Tab2Page implements OnInit {
   ngOnInit() {
     this.openSerialConnection();
     this.addSerialDataListener();
-    this.loadMessagesFromStorage(); // Load messages from storage on init
   }
 
   hexToString(hex: string): string {

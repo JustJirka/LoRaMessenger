@@ -23,6 +23,11 @@ export class Tab3Page implements OnInit {
     this.savedMessages = messages;
   }
 
+  async deleteMessage(index: number) {
+    this.savedMessages.splice(index, 1);
+    await this.storage.set('messages', this.savedMessages);
+  }
+
   ngOnInit() {
     this.platform.ready().then(() => {
       this.loadMessagesFromStorage(); // Load messages from storage on init

@@ -14,6 +14,11 @@
   </ion-header>
 
   <ion-list>
-    <ion-item *ngFor="let message of savedMessages">{{ message }}</ion-item>
+    <ion-item-sliding *ngFor="let message of savedMessages; let i = index">
+      <ion-item>{{ message }}</ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteMessage(i)">Delete</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 </ion-content>
